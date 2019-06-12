@@ -65,6 +65,7 @@ vector <Impressao> lista_impressao;
 static int ordem_de_servico = 0;
 
 fstream impressoes;
+fstream recibo;
 
 void textTitle(string complement = "");
 
@@ -74,6 +75,7 @@ void totalOS();
 
 void load_file();
 void save_file();
+void gerar_recibo(float total = 0, int totalpecas = 0, int os = -1);
 
 bool ordem_de_prioridade(const Impressao &a, const Impressao &b) {
     return ( a.get_OS() < b.get_OS() );
@@ -86,7 +88,7 @@ int main(){
         system("clear");
         textTitle();
         sort(lista_impressao.begin(), lista_impressao.end(), ordem_de_prioridade);
-        
+
         cout << "1. Criar ordem de servico." << endl;
         cout << "2. Inserir impressao a ordem de servico." << endl;
         cout << "3. Custo individual das impressoes." << endl;
@@ -228,7 +230,7 @@ void inserirOS(int option){
 }
 void totalOS(){
     float total = 0;
-    int os_search, totalq = 0;
+    int os_search, totalq = 0, op;
     bool check = false;
     
     system("clear");
@@ -253,6 +255,15 @@ void totalOS(){
         if(totalq <=1) cout << "Total de pecas = " << totalq << " unidade" << endl;
         else cout << "Total de pecas = " << totalq << " unidades" << endl;
         cout << "Total = R$ "<< total << endl << endl;
+
+        cout << "Deseja gerar um recibo?\n\n1.SIM\n2.NAO\n\nopcao: ";
+        cin >> op;
+        
+        if(op == 1){
+            gerar_recibo(total, totalq, os_search);
+            cout << "\nrecibo gerado na pasta raiz do programa como recibo.html" << endl << endl;
+        }
+
     }
     else{
         cout << "Ordem de servico nao encontrada." << endl << endl;
@@ -336,4 +347,42 @@ void save_file(){
 		}
 	}	
 	impressoes.close();
+}
+void gerar_recibo(float total,int totalpecas, int os){
+    int indice;
+    for(int i = 0; i < lista_impressao.size(); i++){
+         if(os == lista_impressao[i].get_OS()){
+            indice = i;
+            break;
+         } 
+    }
+
+    recibo.open("recibo.html", ios::out);
+
+    recibo << "<!DOCTYPE html><html><head><title>Recibo</title></head><body><h2>Recibo</h2>";
+    recibo << "<p>Ordem de Servico: " << lista_impressao[indice].get_OS() << "</p>";
+    recibo << "<p>Cliente: " << lista_impressao[indice].get_client_name() << "</p>";
+    
+    recibo << "<table style=\"width:50%\">";
+    
+    for(int i = 0; i < lista_impressao.size(); i++){
+        if(os == lista_impressao[i].get_OS()){
+            recibo << "<tr><td>Titulo</td><td>"<< lista_impressao[i].get_name() << "</td></tr>";
+            recibo << "<tr><td>Tempo de impressão</td><td>"<< lista_impressao[i].get_minutes() << " minutos</td></tr>";
+            recibo << "<tr><td>Altura de camada</td><td>"<< lista_impressao[i].get_layer_height() << "mm</td></tr>";
+            recibo << "<tr><td>Infill</td><td>"<< lista_impressao[i].get_infill() << "%</td></tr>";
+            recibo << "<tr><td>Tipo de filamento</td><td>"<< lista_impressao[i].getType() << "</td></tr>";
+            recibo << "<tr><td>Quantidade de filamento</td><td>"<< lista_impressao[i].get_filament_used() << "g</td></tr>";
+            recibo << "<tr><td>Custo</td><td>R$"<< lista_impressao[i].getCost() << "</td></tr>";
+            recibo << "<tr><td</td><tr>";
+            recibo << "<tr><td</td><tr>";
+            recibo << "<tr><td</td><tr>";
+        }
+    }
+    recibo << "</table>";
+    recibo << "<p>Quantidade de peças: " << totalpecas << "</p>";
+    recibo << "<p>Total: R$" << total << "</p>";
+    recibo << "</body></html>";
+    
+    recibo.close();
 }
