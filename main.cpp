@@ -190,7 +190,7 @@ void inserirOS(){
 }
 void totalOS(){
     float total = 0;
-    int os_search;
+    int os_search, totalq = 0;
     bool check = false;
     
     system("clear");
@@ -206,11 +206,14 @@ void totalOS(){
     for(int i = 0; i < lista_impressao.size(); i++){
         if(os_search == lista_impressao[i].get_OS()) {
             check = true;
+            totalq++;
             total += lista_impressao[i].getCost();
             lista_impressao[i].viewPrint();
         }
     }
     if(check){
+        if(totalq <=1) cout << "Total de pecas = " << totalq << " unidade" << endl;
+        else cout << "Total de pecas = " << totalq << " unidades" << endl;
         cout << "Total = R$ "<< total << endl << endl;
     }
     else{
