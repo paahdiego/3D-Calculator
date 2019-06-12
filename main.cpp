@@ -29,7 +29,7 @@ class Impressao{
         void set_time(int min){ this->minutes = min; }
         void set_cost(float cst){this->cost = cst; }
 
-        int get_OS(){ return this->os; }
+        int get_OS() const { return this->os; }
         char * get_client_name(){ return this->cliente;}
         char * get_name(){ return this->objectName; }
         float get_layer_height(){ return this->layer_height; }
@@ -75,12 +75,18 @@ void totalOS();
 void load_file();
 void save_file();
 
+bool ordem_de_prioridade(const Impressao &a, const Impressao &b) {
+    return ( a.get_OS() < b.get_OS() );
+}
+
 int main(){
     int op;
     load_file();
     do{
         system("clear");
         textTitle();
+        sort(lista_impressao.begin(), lista_impressao.end(), ordem_de_prioridade);
+        
         cout << "1. Criar ordem de servico." << endl;
         cout << "2. Inserir impressao a ordem de servico." << endl;
         cout << "3. Custo individual das impressoes." << endl;
