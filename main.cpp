@@ -68,7 +68,7 @@ fstream impressoes;
 
 void textTitle(string complement = "");
 
-void inserirOS();
+void inserirOS(int option = 0);
 void custoImpressoes();
 void totalOS();
 
@@ -82,8 +82,9 @@ int main(){
         system("clear");
         textTitle();
         cout << "1. Criar ordem de servico." << endl;
-        cout << "2. Custo individual das impressoes." << endl;
-        cout << "3. Custo total por OS." << endl;
+        cout << "2. Inserir impressao a ordem de servico." << endl;
+        cout << "3. Custo individual das impressoes." << endl;
+        cout << "4. Custo total por OS." << endl;
         cout << endl;
         cout << "0. Sair." << endl << endl;
 
@@ -97,6 +98,9 @@ int main(){
                     inserirOS();
                     break;
                 case 2:
+                    inserirOS(1);
+                    break;
+                case 3:
                     system("clear");
                     if(lista_impressao.size() != 0) custoImpressoes();
                     else{
@@ -105,7 +109,7 @@ int main(){
                         system("read -p \"Pressione enter para continuar...\"");
                     }
                     break;
-                case 3:
+                case 4:
                     system("clear");
                     if(lista_impressao.size() != 0) totalOS();
                     break;
@@ -125,19 +129,46 @@ void textTitle(string complement){
     if(complement != "") cout << "\t"<< complement << " impressao 3D: " << endl << endl;  
     else cout << "\t Impressao 3D" << endl << endl;
 }
-void inserirOS(){
+void inserirOS(int option){
     char name[100], cliente[100];
-    int fill_type, min, op;
+    int fill_type, min, op, os_search;
     float lh, fill_used, infill; 
+    bool check = false;
 
     Impressao aux;
+    
     system("clear");
     cout << "\tOrdem de Servico: \n\n ";
 
-    cout << "Digite o nome do cliente: ";
-    cin.getline(cliente, 100);
-    aux.set_ClientName(cliente);
+    if(option == 0){    
+        cout << "Digite o nome do cliente: ";
+        cin.getline(cliente, 100);
+        aux.set_ClientName(cliente);
+    }
+    else if(option == 1){
+        do{
+            system("clear");
+            cout << "\tOrdem de Servico: \n\n ";
 
+            cout << "digite o numero da OS:";
+            cin >> os_search;
+            cin.ignore();
+
+            for(int i = 0; i < lista_impressao.size(); i++){
+                if(os_search == lista_impressao[i].get_OS()) check = true; 
+                if(check) { 
+                    aux.set_ClientName( lista_impressao[i].get_client_name() );
+                    aux.set_os( lista_impressao[i].get_OS() );
+                    break;
+                }
+            }
+            if(!check){
+                cout << "ordem de servico nao cadastrada.\n\nDigite novamente.";
+                system("read -p \"Pressione enter para continuar...\"");
+            } 
+        }while(!check);
+    }
+    
     do{
         system("clear");
         textTitle("Inserir");
@@ -171,7 +202,8 @@ void inserirOS(){
         cout << "tempo de impressao (minutos): ";
         cin >> min;
 
-        aux.set_os(ordem_de_servico);
+        if(option == 0) aux.set_os(ordem_de_servico);
+        
         aux.set_name(name);
         aux.set_layer_height(lh);
         aux.set_infill(infill);
@@ -185,8 +217,8 @@ void inserirOS(){
         cin >> op;
         cin.ignore();
     }while(op == 1);
-
-    ordem_de_servico++;
+    
+    if(option == 0) ordem_de_servico++;
 }
 void totalOS(){
     float total = 0;
