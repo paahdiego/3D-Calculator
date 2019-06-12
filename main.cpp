@@ -35,8 +35,19 @@ class Impressao{
         float get_layer_height(){ return this->layer_height; }
         float get_infill(){ return this->infill; }
         float getCost(){            
+            float Faux = 0;
+            int Iaux = 0;
             if(filament_type == 1) this->cost = (1.4/60 * minutes) + (filament_used * ABS/1000);
             else if(filament_type == 2) this->cost = (1.4/60 * minutes) + (filament_used * PLA/1000);
+            
+            Iaux = int(this->cost);
+            Faux = this->cost - (float)Iaux;           
+            this->cost = float(Iaux);
+            Faux = Faux * 100;
+            Iaux = int(Faux);
+            Faux = float(Iaux)/100;
+            this->cost += Faux;
+
             return this->cost;
         }
         float get_filament_used(){ return this->filament_used; }
@@ -57,7 +68,7 @@ class Impressao{
             cout << "Filamento usado: " << this->filament_used << " gramas" << endl;
             cout << "Tempo de impressao: " << this->minutes<< " minutos" << endl;
             cout << endl;
-            cout << setprecision(3) << "Custo: R$" << this->getCost() << endl << endl;
+            cout << "Custo: R$" << this->getCost() << endl << endl;
         }
 };
 
@@ -261,6 +272,7 @@ void totalOS(){
         
         if(op == 1){
             gerar_recibo(total, totalq, os_search);
+            system("open recibo.html");
             cout << "\nrecibo gerado na pasta raiz do programa como recibo.html" << endl << endl;
         }
 
