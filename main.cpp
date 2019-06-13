@@ -169,7 +169,7 @@ void inserirOS(int option){
             system("clear");
             cout << "\tOrdem de Servico: \n\n ";
 
-            cout << "digite o numero da OS:";
+            cout << "digite o numero da OS: ";
             cin >> os_search;
             cin.ignore();
 
@@ -198,7 +198,7 @@ void inserirOS(int option){
         system("clear");
         textTitle("Inserir");
         cout << "Tipo de filamento: " << endl << endl;
-        cout << "1. ABS\n2. PLA\n\n opcao: ";
+        cout << "1. ABS\n2. PLA\n\nopcao: ";
         cin >> fill_type;
 
         system("clear");
@@ -232,7 +232,7 @@ void inserirOS(int option){
         lista_impressao.push_back(aux);
 
         system("clear");
-        cout << "deseja inserir outra peca? \n\n1.SIM\n2.NAO \n\n opcao:";
+        cout << "deseja inserir outra peca? \n\n1.SIM\n2.NAO \n\nopcao:";
         cin >> op;
         cin.ignore();
     }while(op == 1);
