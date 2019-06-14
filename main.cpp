@@ -380,7 +380,7 @@ void gerar_recibo(float total,int totalpecas, int os){
     for(int i = 0; i < lista_impressao.size(); i++){
         if(os == lista_impressao[i].get_OS()){
             recibo << "<tr><td>Titulo</td><td>"<< lista_impressao[i].get_name() << "</td></tr>";
-            recibo << "<tr><td>Tempo de impressão</td><td>"<< lista_impressao[i].get_minutes() << " minutos</td></tr>";
+            recibo << "<tr><td>Tempo de impressao</td><td>"<< lista_impressao[i].get_minutes() << " minutos</td></tr>";
             recibo << "<tr><td>Altura de camada</td><td>"<< lista_impressao[i].get_layer_height() << "mm</td></tr>";
             recibo << "<tr><td>Infill</td><td>"<< lista_impressao[i].get_infill() << "%</td></tr>";
             recibo << "<tr><td>Tipo de filamento</td><td>"<< lista_impressao[i].getType() << "</td></tr>";
@@ -392,7 +392,7 @@ void gerar_recibo(float total,int totalpecas, int os){
         }
     }
     recibo << "</table>";
-    recibo << "<p>Quantidade de peças: " << totalpecas << "</p>";
+    recibo << "<p>Quantidade de pecas: " << totalpecas << "</p>";
     recibo << "<p>Total: R$" << total << "</p>";
     recibo << "</body></html>";
     
