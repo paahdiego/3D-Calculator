@@ -98,7 +98,7 @@ int main(){
     int op;
     load_file();
     do{
-        system("cls");
+        system("clear");
         textTitle();
         sort(lista_impressao.begin(), lista_impressao.end(), ordem_de_prioridade);
 
@@ -122,20 +122,20 @@ int main(){
                     inserirOS(1);
                     break;
                 case 3:
-                    system("cls");
+                    system("clear");
                     if(lista_impressao.size() != 0) custoImpressoes();
                     else{
                         textTitle("Custo -");
                         cout << "lista zerada." << endl << endl;
-                        system("pause");
+                        system("read -p \"Pressione enter para continuar...\"");
                     }
                     break;
                 case 4:
-                    system("cls");
+                    system("clear");
                     if(lista_impressao.size() != 0) totalOS();
                     break;
                 default:
-                    system("cls");
+                    system("clear");
                     textTitle();
                     cout << "opcao invalida." << endl;
             }
@@ -158,7 +158,7 @@ void inserirOS(int option){
 
     Impressao aux;
     
-    system("cls");
+    system("clear");
     cout << "\tOrdem de Servico: \n\n ";
 
     if(option == 0){    
@@ -168,7 +168,7 @@ void inserirOS(int option){
     }
     else if(option == 1){
         do{
-            system("cls");
+            system("clear");
             cout << "\tOrdem de Servico: \n\n ";
 
             cout << "digite o numero da OS: ";
@@ -185,40 +185,40 @@ void inserirOS(int option){
             }
             if(!check){
                 cout << "ordem de servico nao cadastrada.\n\nDigite novamente.";
-                system("pause");
+                system("read -p \"Pressione enter para continuar...\"");
             } 
         }while(!check);
     }
     
     do{
-        system("cls");
+        system("clear");
         textTitle("Inserir");
 
         cout << "digite o titulo da impressao: ";
         cin.getline(name, 100);
         
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "Tipo de filamento: " << endl << endl;
         cout << "1. ABS\n2. PLA\n\nopcao: ";
         cin >> fill_type;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "quantidade de filamento (gramas): ";
         cin >> fill_used;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "altura de camada: ";
         cin >> lh;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "Infill (%): ";
         cin >> infill;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "tempo de impressao (minutos): ";
         cin >> min;
@@ -233,7 +233,7 @@ void inserirOS(int option){
         aux.set_time(min);
         lista_impressao.push_back(aux);
 
-        system("cls");
+        system("clear");
         cout << "deseja inserir outra peca? \n\n1.SIM\n2.NAO \n\nopcao:";
         cin >> op;
         cin.ignore();
@@ -246,13 +246,13 @@ void totalOS(){
     int os_search, totalq = 0, op;
     bool check = false;
     
-    system("cls");
+    system("clear");
     
     textTitle("Busca de Ordem de Servico");
     cout << "Digite a OS: ";
     cin >> os_search;
 
-    system("cls");
+    system("clear");
 
     textTitle("Calculo total de OS");
 
@@ -274,7 +274,9 @@ void totalOS(){
         
         if(op == 1){
             string rec;
+            string open = "open ";
             rec = gerar_recibo(total, totalq, os_search);
+            rec = open + rec;
             system(rec.c_str());
             cout << "\nrecibo gerado na pasta raiz do programa como recibo.html" << endl << endl;
         }
@@ -284,15 +286,15 @@ void totalOS(){
         cout << "Ordem de servico nao encontrada." << endl << endl;
     }
 
-    system("pause");
+    system("read -p \"Pressione enter para continuar...\"");
 }
 void custoImpressoes(){
-    system("cls");
+    system("clear");
     textTitle("Custo - ");
     for(int i = 0; i < lista_impressao.size(); i++){
         lista_impressao[i].viewPrint();
     }
-    system("pause");
+    system("read -p \"Pressione enter para continuar...\"");
 }
 void load_file(){
 	Impressao *auxp = new Impressao;
@@ -375,7 +377,6 @@ string gerar_recibo(float total,int totalpecas, int os){
 
     client = lista_impressao[indice].get_client_name();
     OS = to_string(lista_impressao[indice].get_OS());
-    space = " ";
 
     rec = rec + client + OS + format;
     
