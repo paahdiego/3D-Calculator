@@ -7,6 +7,8 @@
 #include <cstdio>
 #include "stdc++.h"
 
+//g++ -std=c++11 -o program main.cpp
+
 #define PLA 130.0
 #define ABS 85.0 
 
@@ -86,7 +88,7 @@ void totalOS();
 
 void load_file();
 void save_file();
-void gerar_recibo(float total = 0, int totalpecas = 0, int os = -1);
+string gerar_recibo(float total = 0, int totalpecas = 0, int os = -1);
 
 bool ordem_de_prioridade(const Impressao &a, const Impressao &b) {
     return ( a.get_OS() < b.get_OS() );
@@ -96,7 +98,7 @@ int main(){
     int op;
     load_file();
     do{
-        system("clear");
+        system("cls");
         textTitle();
         sort(lista_impressao.begin(), lista_impressao.end(), ordem_de_prioridade);
 
@@ -120,20 +122,20 @@ int main(){
                     inserirOS(1);
                     break;
                 case 3:
-                    system("clear");
+                    system("cls");
                     if(lista_impressao.size() != 0) custoImpressoes();
                     else{
                         textTitle("Custo -");
                         cout << "lista zerada." << endl << endl;
-                        system("read -p \"Pressione enter para continuar...\"");
+                        system("pause");
                     }
                     break;
                 case 4:
-                    system("clear");
+                    system("cls");
                     if(lista_impressao.size() != 0) totalOS();
                     break;
                 default:
-                    system("clear");
+                    system("cls");
                     textTitle();
                     cout << "opcao invalida." << endl;
             }
@@ -156,7 +158,7 @@ void inserirOS(int option){
 
     Impressao aux;
     
-    system("clear");
+    system("cls");
     cout << "\tOrdem de Servico: \n\n ";
 
     if(option == 0){    
@@ -166,7 +168,7 @@ void inserirOS(int option){
     }
     else if(option == 1){
         do{
-            system("clear");
+            system("cls");
             cout << "\tOrdem de Servico: \n\n ";
 
             cout << "digite o numero da OS: ";
@@ -183,40 +185,40 @@ void inserirOS(int option){
             }
             if(!check){
                 cout << "ordem de servico nao cadastrada.\n\nDigite novamente.";
-                system("read -p \"Pressione enter para continuar...\"");
+                system("pause");
             } 
         }while(!check);
     }
     
     do{
-        system("clear");
+        system("cls");
         textTitle("Inserir");
 
         cout << "digite o titulo da impressao: ";
         cin.getline(name, 100);
         
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "Tipo de filamento: " << endl << endl;
         cout << "1. ABS\n2. PLA\n\nopcao: ";
         cin >> fill_type;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "quantidade de filamento (gramas): ";
         cin >> fill_used;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "altura de camada: ";
         cin >> lh;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "Infill (%): ";
         cin >> infill;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "tempo de impressao (minutos): ";
         cin >> min;
@@ -231,7 +233,7 @@ void inserirOS(int option){
         aux.set_time(min);
         lista_impressao.push_back(aux);
 
-        system("clear");
+        system("cls");
         cout << "deseja inserir outra peca? \n\n1.SIM\n2.NAO \n\nopcao:";
         cin >> op;
         cin.ignore();
@@ -244,13 +246,13 @@ void totalOS(){
     int os_search, totalq = 0, op;
     bool check = false;
     
-    system("clear");
+    system("cls");
     
     textTitle("Busca de Ordem de Servico");
     cout << "Digite a OS: ";
     cin >> os_search;
 
-    system("clear");
+    system("cls");
 
     textTitle("Calculo total de OS");
 
@@ -271,8 +273,9 @@ void totalOS(){
         cin >> op;
         
         if(op == 1){
-            gerar_recibo(total, totalq, os_search);
-            system("open recibo.html");
+            string rec;
+            rec = gerar_recibo(total, totalq, os_search);
+            system(rec.c_str());
             cout << "\nrecibo gerado na pasta raiz do programa como recibo.html" << endl << endl;
         }
 
@@ -281,15 +284,15 @@ void totalOS(){
         cout << "Ordem de servico nao encontrada." << endl << endl;
     }
 
-    system("read -p \"Pressione enter para continuar...\"");
+    system("pause");
 }
 void custoImpressoes(){
-    system("clear");
+    system("cls");
     textTitle("Custo - ");
     for(int i = 0; i < lista_impressao.size(); i++){
         lista_impressao[i].viewPrint();
     }
-    system("read -p \"Pressione enter para continuar...\"");
+    system("pause");
 }
 void load_file(){
 	Impressao *auxp = new Impressao;
@@ -360,7 +363,7 @@ void save_file(){
 	}	
 	impressoes.close();
 }
-void gerar_recibo(float total,int totalpecas, int os){
+string gerar_recibo(float total,int totalpecas, int os){
     int indice;
     for(int i = 0; i < lista_impressao.size(); i++){
          if(os == lista_impressao[i].get_OS()){
@@ -368,8 +371,15 @@ void gerar_recibo(float total,int totalpecas, int os){
             break;
          } 
     }
+    string rec = "recibo", format = ".html", client, OS, space;
 
-    recibo.open("recibo.html", ios::out);
+    client = lista_impressao[indice].get_client_name();
+    OS = to_string(lista_impressao[indice].get_OS());
+    space = " ";
+
+    rec = rec + client + OS + format;
+    
+    recibo.open(rec.c_str(), ios::out);
 
     recibo << "<!DOCTYPE html><html><head><title>Recibo</title></head><body><h2>Recibo</h2>";
     recibo << "<p>Ordem de Servico: " << lista_impressao[indice].get_OS() << "</p>";
@@ -397,4 +407,5 @@ void gerar_recibo(float total,int totalpecas, int os){
     recibo << "</body></html>";
     
     recibo.close();
+    return rec;
 }
