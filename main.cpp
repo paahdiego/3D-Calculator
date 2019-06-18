@@ -17,60 +17,80 @@ using namespace std;
 class Impressao{
     protected:
         char objectName[100], cliente[100];
-        float layer_height, infill, cost, filament_used;
+        float layer_height, infill, cost_time, cost_used, filament_used;
         int filament_type, minutes, os; // 1 ABS. 2 PLA.
         char aux[10];
     public:
-        void set_os(int ordem){ this->os = ordem; }
-        void set_ClientName(char nome[]){ strcpy(this->cliente, nome); }
-        void set_name(char nome[]){ strcpy(this->objectName, nome); }
-        void set_layer_height(float height){ this->layer_height = height; }
-        void set_infill(float fill){ this->infill = fill; }
-        void set_filament_type(int type){ this->filament_type = type; }
-        void set_filament_used(float used){ this->filament_used = used; }
-        void set_time(int min){ this->minutes = min; }
-        void set_cost(float cst){this->cost = cst; }
+        void set_os(int ordem){ os = ordem; }
+        void set_ClientName(char nome[]){ strcpy(cliente, nome); }
+        void set_name(char nome[]){ strcpy(objectName, nome); }
+        void set_layer_height(float height){ layer_height = height; }
+        void set_infill(float fill){ infill = fill; }
+        void set_filament_type(int type){ filament_type = type; }
+        void set_filament_used(float used){ filament_used = used; }
+        void set_time(int min){ minutes = min; }
+        void set_cost_time(float cst){cost_time = cst; }
+        void set_cost_used(float cst){cost_used = cst; }
 
-        int get_OS() const { return this->os; }
-        char * get_client_name(){ return this->cliente;}
-        char * get_name(){ return this->objectName; }
-        float get_layer_height(){ return this->layer_height; }
-        float get_infill(){ return this->infill; }
-        float getCost(){            
+        int get_OS() const { return os; }
+        char * get_client_name(){ return cliente;}
+        char * get_name(){ return objectName; }
+        float get_layer_height(){ return layer_height; }
+        float get_infill(){ return infill; }
+        float get_cost_used(){            
             float Faux = 0;
             int Iaux = 0;
-            if(filament_type == 1) this->cost = (1.4/60 * minutes) + (filament_used * ABS/1000);
-            else if(filament_type == 2) this->cost = (1.4/60 * minutes) + (filament_used * PLA/1000);
+
+            if(filament_type == 1) cost_used = filament_used * (ABS/1000);
+            else if(filament_type == 2) cost_used = filament_used * (PLA/1000);
             
-            Iaux = int(this->cost);
-            Faux = this->cost - (float)Iaux;           
-            this->cost = float(Iaux);
+            Iaux = int(cost_used);
+            Faux = cost_used - (float)Iaux;           
+            cost_used = float(Iaux);
             Faux = Faux * 100;
             Iaux = int(Faux);
             Faux = float(Iaux)/100;
-            this->cost += Faux;
+            cost_used += Faux;
 
-            return this->cost;
+            return cost_used;
         }
-        float get_filament_used(){ return this->filament_used; }
-        int get_filament_type(){ return this->filament_type; }
-        int get_minutes(){ return this->minutes; }
+        float get_cost_time(){            
+            float Faux = 0;
+            int Iaux = 0;
+            
+            cost_time = (1.4/60) * minutes;
+            
+            Iaux = int(cost_time);
+            Faux = cost_time - (float)Iaux;           
+            cost_time = float(Iaux);
+            Faux = Faux * 100;
+            Iaux = int(Faux);
+            Faux = float(Iaux)/100;
+            cost_time += Faux;
+
+            return cost_time;
+        }
+        float get_filament_used(){ return filament_used; }
+        int get_filament_type(){ return filament_type; }
+        int get_minutes(){ return minutes; }
         char * getType(){
-            if(filament_type == 1) strcpy(this->aux, "ABS");
-            else if(filament_type == 2) strcpy(this->aux, "PLA"); 
-            return this->aux;
+            if(filament_type == 1) strcpy(aux, "ABS");
+            else if(filament_type == 2) strcpy(aux, "PLA"); 
+            return aux;
         }
         void viewPrint(){
-            cout << "Ordem de servico: " << this->os << endl;
-            cout << "Nome do cliente: " << this->cliente << endl;
-            cout << "Impressao: " << this->objectName << endl;
-            cout << "Altura de camada: " << this->layer_height << "mm" << endl;
-            cout << "Infill: " << this->infill << "%" << endl;
+            cout << "Ordem de servico: " << os << endl;
+            cout << "Nome do cliente: " << cliente << endl;
+            cout << "Impressao: " << objectName << endl;
+            cout << "Altura de camada: " << layer_height << "mm" << endl;
+            cout << "Infill: " << infill << "%" << endl;
             cout << "Filamento: " << getType() << endl;
-            cout << "Filamento usado: " << this->filament_used << " gramas" << endl;
-            cout << "Tempo de impressao: " << this->minutes<< " minutos" << endl;
+            cout << "Filamento usado: " << filament_used << " gramas" << endl;
+            cout << "Tempo de impressao: " << minutes<< " minutos" << endl;
             cout << endl;
-            cout << "Custo: R$" << this->getCost() << endl << endl;
+            cout << "Custo por tempo: R$" << get_cost_time() << endl;
+            cout << "Custo por filamento usado: R$" << get_cost_used() << endl;
+            cout << "Custo total da peca: R$" << get_cost_time() + get_cost_used() << endl << endl; 
         }
 };
 
@@ -260,7 +280,7 @@ void totalOS(){
         if(os_search == lista_impressao[i].get_OS()) {
             check = true;
             totalq++;
-            total += lista_impressao[i].getCost();
+            total += lista_impressao[i].get_cost_time() + lista_impressao[i].get_cost_used();
             lista_impressao[i].viewPrint();
         }
     }
@@ -298,7 +318,7 @@ void custoImpressoes(){
 }
 void load_file(){
 	Impressao *auxp = new Impressao;
-	string aux[9];
+	string aux[10];
     int bigger = 0;
 	char auxC[100];
 	
@@ -317,7 +337,8 @@ void load_file(){
 			getline(impressoes, aux[5], ';');
             getline(impressoes, aux[6], ';');
             getline(impressoes, aux[7], ';');
-			getline(impressoes, aux[8], '\n');
+            getline(impressoes, aux[8], ';');
+			getline(impressoes, aux[9], '\n');
             check = true;
 		}
 		
@@ -329,10 +350,11 @@ void load_file(){
 			auxp->set_name(auxC);
 			auxp->set_layer_height( atof(aux[3].c_str()));
 			auxp->set_infill( atof(aux[4].c_str()));
-			auxp->set_cost( atof(aux[5].c_str()));
-			auxp->set_filament_used(atof(aux[6].c_str()));
-            auxp->set_filament_type(atoi(aux[7].c_str()));
-            auxp->set_time(atoi(aux[8].c_str()));
+			auxp->set_cost_used( atof(aux[5].c_str()));
+            auxp->set_cost_time( atof(aux[6].c_str()));
+			auxp->set_filament_used(atof(aux[7].c_str()));
+            auxp->set_filament_type(atoi(aux[8].c_str()));
+            auxp->set_time(atoi(aux[9].c_str()));
 
             if(auxp->get_OS() > bigger) bigger = auxp->get_OS();
 
@@ -352,7 +374,8 @@ void save_file(){
 		impressoes << lista_impressao[i].get_name() << ";";
 		impressoes << lista_impressao[i].get_layer_height() << ";";
 		impressoes << lista_impressao[i].get_infill() << ";";
-		impressoes << lista_impressao[i].getCost() << ";";
+		impressoes << lista_impressao[i].get_cost_used() << ";";
+        impressoes << lista_impressao[i].get_cost_time() << ";";
 		impressoes << lista_impressao[i].get_filament_used() << ";";
 		impressoes << lista_impressao[i].get_filament_type() << ";";
 
@@ -396,7 +419,11 @@ string gerar_recibo(float total,int totalpecas, int os){
             recibo << "<tr><td>Infill</td><td>"<< lista_impressao[i].get_infill() << "%</td></tr>";
             recibo << "<tr><td>Tipo de filamento</td><td>"<< lista_impressao[i].getType() << "</td></tr>";
             recibo << "<tr><td>Quantidade de filamento</td><td>"<< lista_impressao[i].get_filament_used() << "g</td></tr>";
-            recibo << "<tr><td>Custo</td><td>R$"<< lista_impressao[i].getCost() << "</td></tr>";
+            recibo << "<tr><td>Custo por filamento</td><td>R$"<< lista_impressao[i].get_cost_used() << "</td></tr>";
+            recibo << "<tr><td>Custo por tempo</td><td>R$"<< lista_impressao[i].get_cost_time() << "</td></tr>";
+            recibo << "<tr><td</td><tr>";
+            recibo << "<tr><td</td><tr>";
+            recibo << "<tr><td>Custo da peca</td><td>R$"<< lista_impressao[i].get_cost_time() + lista_impressao[i].get_cost_used() << "</td></tr>";
             recibo << "<tr><td</td><tr>";
             recibo << "<tr><td</td><tr>";
             recibo << "<tr><td</td><tr>";
