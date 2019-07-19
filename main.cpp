@@ -78,6 +78,9 @@ class Impressao{
             else if(filament_type == 2) strcpy(aux, "PLA"); 
             return aux;
         }
+        int getFillType(){
+            return filament_type;
+        }
         void viewPrint(){
             cout << "Ordem de servico: " << os << endl;
             cout << "Nome do cliente: " << cliente << endl;
@@ -105,6 +108,7 @@ void textTitle(string complement = "");
 void inserirOS(int option = 0);
 void custoImpressoes();
 void totalOS();
+void totalUSO();
 
 void load_file();
 void save_file();
@@ -118,7 +122,7 @@ int main(){
     int op;
     load_file();
     do{
-        system("clear");
+        system("cls");
         textTitle();
         sort(lista_impressao.begin(), lista_impressao.end(), ordem_de_prioridade);
 
@@ -126,6 +130,7 @@ int main(){
         cout << "2. Inserir impressao a ordem de servico." << endl;
         cout << "3. Custo individual das impressoes." << endl;
         cout << "4. Custo total por OS." << endl;
+        cout << "5. Uso total" << endl;
         cout << endl;
         cout << "0. Sair." << endl << endl;
 
@@ -142,20 +147,24 @@ int main(){
                     inserirOS(1);
                     break;
                 case 3:
-                    system("clear");
+                    system("cls");
                     if(lista_impressao.size() != 0) custoImpressoes();
                     else{
                         textTitle("Custo -");
                         cout << "lista zerada." << endl << endl;
-                        system("read -p \"Pressione enter para continuar...\"");
+                        system("pause");
                     }
                     break;
                 case 4:
-                    system("clear");
+                    system("cls");
                     if(lista_impressao.size() != 0) totalOS();
                     break;
+                case 5:
+                    system("cls");
+                    totalUSO();
+                    break;    
                 default:
-                    system("clear");
+                    system("cls");
                     textTitle();
                     cout << "opcao invalida." << endl;
             }
@@ -178,7 +187,7 @@ void inserirOS(int option){
 
     Impressao aux;
     
-    system("clear");
+    system("cls");
     cout << "\tOrdem de Servico: \n\n ";
 
     if(option == 0){    
@@ -188,7 +197,7 @@ void inserirOS(int option){
     }
     else if(option == 1){
         do{
-            system("clear");
+            system("cls");
             cout << "\tOrdem de Servico: \n\n ";
 
             cout << "digite o numero da OS: ";
@@ -205,40 +214,40 @@ void inserirOS(int option){
             }
             if(!check){
                 cout << "ordem de servico nao cadastrada.\n\nDigite novamente.";
-                system("read -p \"Pressione enter para continuar...\"");
+                system("pause");
             } 
         }while(!check);
     }
     
     do{
-        system("clear");
+        system("cls");
         textTitle("Inserir");
 
         cout << "digite o titulo da impressao: ";
         cin.getline(name, 100);
         
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "Tipo de filamento: " << endl << endl;
         cout << "1. ABS\n2. PLA\n\nopcao: ";
         cin >> fill_type;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "quantidade de filamento (gramas): ";
         cin >> fill_used;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "altura de camada: ";
         cin >> lh;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "Infill (%): ";
         cin >> infill;
 
-        system("clear");
+        system("cls");
         textTitle("Inserir");
         cout << "tempo de impressao (minutos): ";
         cin >> min;
@@ -253,7 +262,7 @@ void inserirOS(int option){
         aux.set_time(min);
         lista_impressao.push_back(aux);
 
-        system("clear");
+        system("cls");
         cout << "deseja inserir outra peca? \n\n1.SIM\n2.NAO \n\nopcao:";
         cin >> op;
         cin.ignore();
@@ -266,13 +275,13 @@ void totalOS(){
     int os_search, totalq = 0, op;
     bool check = false;
     
-    system("clear");
+    system("cls");
     
     textTitle("Busca de Ordem de Servico");
     cout << "Digite a OS: ";
     cin >> os_search;
 
-    system("clear");
+    system("cls");
 
     textTitle("Calculo total de OS");
 
@@ -294,9 +303,7 @@ void totalOS(){
         
         if(op == 1){
             string rec;
-            string open = "open ";
             rec = gerar_recibo(total, totalq, os_search);
-            rec = open + rec;
             system(rec.c_str());
             cout << "\nrecibo gerado na pasta raiz do programa como recibo.html" << endl << endl;
         }
@@ -306,15 +313,15 @@ void totalOS(){
         cout << "Ordem de servico nao encontrada." << endl << endl;
     }
 
-    system("read -p \"Pressione enter para continuar...\"");
+    system("pause");
 }
 void custoImpressoes(){
-    system("clear");
+    system("cls");
     textTitle("Custo - ");
     for(int i = 0; i < lista_impressao.size(); i++){
         lista_impressao[i].viewPrint();
     }
-    system("read -p \"Pressione enter para continuar...\"");
+    system("pause");
 }
 void load_file(){
 	Impressao *auxp = new Impressao;
@@ -435,5 +442,69 @@ string gerar_recibo(float total,int totalpecas, int os){
     recibo << "</body></html>";
     
     recibo.close();
+    rec = '\"' + rec + '\"'; 
     return rec;
+}
+
+void totalUSO(){
+    int tempoTotal = 0, pecas =0;
+    float custoTotalMaterial = 0, custoTotalTempo = 0, totalFilamento = 0;
+    float mediaMat, mediaCustoMat, mediaCustoTempo, mediaTempo, mediapecas;
+
+    for (int i = 0; i < lista_impressao.size(); i++){
+        if(lista_impressao[i].getFillType() == 1){ // ABS
+            tempoTotal = tempoTotal + lista_impressao[i].get_minutes();
+            custoTotalMaterial +=  lista_impressao[i].get_cost_used();
+            custoTotalTempo +=  lista_impressao[i].get_cost_time();
+            totalFilamento += lista_impressao[i].get_filament_used();
+            pecas++;
+        }            
+    }
+
+    system("cls");
+    
+    cout << "ABS: " << endl << endl;
+    cout << "Quantidade de pecas impressas: " << pecas << endl;
+    cout << "Tempo total: " << tempoTotal <<" minutos" << endl;
+    cout << "Material usado: " << totalFilamento << "g"<<endl;
+    cout << "Custo por tempo total: R$" << custoTotalTempo << endl;
+    cout << "Custo por material total: R$" << custoTotalMaterial << endl;
+    
+    mediaMat = totalFilamento;
+    mediaCustoMat = custoTotalMaterial;
+    mediaCustoTempo = custoTotalTempo;
+    mediapecas = float(pecas);
+    mediaTempo = float(tempoTotal);
+
+    tempoTotal = 0;
+    custoTotalMaterial = 0;
+    custoTotalTempo = 0;
+    pecas = 0;
+    totalFilamento = 0;
+
+    for (int i = 0; i < lista_impressao.size(); i++){
+        if(lista_impressao[i].getFillType() == 2){ // PLA
+            tempoTotal += lista_impressao[i].get_minutes();
+            custoTotalMaterial +=  lista_impressao[i].get_cost_used();
+            custoTotalTempo +=  lista_impressao[i].get_cost_time();
+            totalFilamento += lista_impressao[i].get_filament_used();
+            pecas++;
+        }                   
+    }
+
+    cout << "\nPLA: " << endl << endl;
+    cout << "Quantidade de pecas impressas: " << pecas << endl;
+    cout << "Tempo total: " << tempoTotal <<" minutos" << endl;
+    cout << "Material usado: " << totalFilamento << "g"<<endl;
+    cout << "Custo por tempo total: R$" << custoTotalTempo << endl;
+    cout << "Custo por material total: R$" << custoTotalMaterial << endl << endl;
+
+    cout << "Quantidade total de pecas impressas: " << pecas + mediapecas << endl;
+    cout << "Media de custo de material por impressao  (independente de material): R$" << (mediaCustoMat + custoTotalMaterial)/(pecas + mediapecas) << endl;
+    cout << "Media de custo de tempo por impressao  (independente de material): R$" << (mediaCustoTempo + custoTotalTempo)/(pecas + mediapecas) << endl;
+    cout << "quantidade media de filamento usado por impressao: " << (totalFilamento + mediaMat)/(pecas + mediapecas) <<"g" <<  endl;
+    cout << "tempo medio por impressao: " << (float(tempoTotal) + mediaTempo) / (pecas + mediapecas) << " minutos"<< endl << endl;
+    
+
+    system("pause");
 }
