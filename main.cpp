@@ -122,7 +122,7 @@ int main(){
     int op;
     load_file();
     do{
-        system("cls");
+        system("clear");
         textTitle();
         sort(lista_impressao.begin(), lista_impressao.end(), ordem_de_prioridade);
 
@@ -147,24 +147,24 @@ int main(){
                     inserirOS(1);
                     break;
                 case 3:
-                    system("cls");
+                    system("clear");
                     if(lista_impressao.size() != 0) custoImpressoes();
                     else{
                         textTitle("Custo -");
                         cout << "lista zerada." << endl << endl;
-                        system("pause");
+                        system("read -p \"Enter para continuar\"");
                     }
                     break;
                 case 4:
-                    system("cls");
+                    system("clear");
                     if(lista_impressao.size() != 0) totalOS();
                     break;
                 case 5:
-                    system("cls");
+                    system("clear");
                     totalUSO();
                     break;    
                 default:
-                    system("cls");
+                    system("clear");
                     textTitle();
                     cout << "opcao invalida." << endl;
             }
@@ -187,7 +187,7 @@ void inserirOS(int option){
 
     Impressao aux;
     
-    system("cls");
+    system("clear");
     cout << "\tOrdem de Servico: \n\n ";
 
     if(option == 0){    
@@ -197,7 +197,7 @@ void inserirOS(int option){
     }
     else if(option == 1){
         do{
-            system("cls");
+            system("clear");
             cout << "\tOrdem de Servico: \n\n ";
 
             cout << "digite o numero da OS: ";
@@ -214,40 +214,40 @@ void inserirOS(int option){
             }
             if(!check){
                 cout << "ordem de servico nao cadastrada.\n\nDigite novamente.";
-                system("pause");
+                system("read -p \"Enter para continuar\"");
             } 
         }while(!check);
     }
     
     do{
-        system("cls");
+        system("clear");
         textTitle("Inserir");
 
         cout << "digite o titulo da impressao: ";
         cin.getline(name, 100);
         
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "Tipo de filamento: " << endl << endl;
         cout << "1. ABS\n2. PLA\n\nopcao: ";
         cin >> fill_type;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "quantidade de filamento (gramas): ";
         cin >> fill_used;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "altura de camada: ";
         cin >> lh;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "Infill (%): ";
         cin >> infill;
 
-        system("cls");
+        system("clear");
         textTitle("Inserir");
         cout << "tempo de impressao (minutos): ";
         cin >> min;
@@ -262,7 +262,7 @@ void inserirOS(int option){
         aux.set_time(min);
         lista_impressao.push_back(aux);
 
-        system("cls");
+        system("clear");
         cout << "deseja inserir outra peca? \n\n1.SIM\n2.NAO \n\nopcao:";
         cin >> op;
         cin.ignore();
@@ -275,13 +275,13 @@ void totalOS(){
     int os_search, totalq = 0, op;
     bool check = false;
     
-    system("cls");
+    system("clear");
     
     textTitle("Busca de Ordem de Servico");
     cout << "Digite a OS: ";
     cin >> os_search;
 
-    system("cls");
+    system("clear");
 
     textTitle("Calculo total de OS");
 
@@ -302,10 +302,14 @@ void totalOS(){
         cin >> op;
         
         if(op == 1){
-            string rec;
-            rec = gerar_recibo(total, totalq, os_search);
+            //windows string rec;
+            string rec = "open ./";
+
+            rec += gerar_recibo(total, totalq, os_search);
             system(rec.c_str());
-            cout << "\nrecibo gerado na pasta raiz do programa como recibo.html" << endl << endl;
+            
+            cout << "\nrecibo gerado na pasta raiz do programa" << endl << endl;
+            system("read -p \"Enter para continuar\"");
         }
 
     }
@@ -313,15 +317,15 @@ void totalOS(){
         cout << "Ordem de servico nao encontrada." << endl << endl;
     }
 
-    system("pause");
+    system("read -p \"Enter para continuar\"");
 }
 void custoImpressoes(){
-    system("cls");
+    system("clear");
     textTitle("Custo - ");
     for(int i = 0; i < lista_impressao.size(); i++){
         lista_impressao[i].viewPrint();
     }
-    system("pause");
+    system("read -p \"Enter para continuar\"");
 }
 void load_file(){
 	Impressao *auxp = new Impressao;
@@ -397,6 +401,7 @@ void save_file(){
 }
 string gerar_recibo(float total,int totalpecas, int os){
     int indice;
+    int totalTempo = 0;
     for(int i = 0; i < lista_impressao.size(); i++){
          if(os == lista_impressao[i].get_OS()){
             indice = i;
@@ -404,6 +409,7 @@ string gerar_recibo(float total,int totalpecas, int os){
          } 
     }
     string rec = "recibo", format = ".html", client, OS, space;
+    //string rec = "recibo", format = ".html", client, OS, space; Windows
 
     client = lista_impressao[indice].get_client_name();
     OS = to_string(lista_impressao[indice].get_OS());
@@ -434,11 +440,13 @@ string gerar_recibo(float total,int totalpecas, int os){
             recibo << "<tr><td</td><tr>";
             recibo << "<tr><td</td><tr>";
             recibo << "<tr><td</td><tr>";
+            totalTempo += lista_impressao[i].get_minutes();
         }
     }
     recibo << "</table>";
     recibo << "<p>Quantidade de pecas: " << totalpecas << "</p>";
     recibo << "<p>Total: R$" << total << "</p>";
+    recibo << "<p>Tempo total de impressão: " << totalTempo << " minutos</p>";
     recibo << "</body></html>";
     
     recibo.close();
@@ -461,7 +469,7 @@ void totalUSO(){
         }            
     }
 
-    system("cls");
+    system("clear");
     
     cout << "ABS: " << endl << endl;
     cout << "Quantidade de pecas impressas: " << pecas << endl;
@@ -506,5 +514,5 @@ void totalUSO(){
     cout << "tempo medio por impressao: " << (float(tempoTotal) + mediaTempo) / (pecas + mediapecas) << " minutos"<< endl << endl;
     
 
-    system("pause");
+    system("read -p \"Enter para continuar\"");
 }
